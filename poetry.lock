@@ -246,7 +246,6 @@ files = [
 ]
 
 [[package]]
-<<<<<<< HEAD
 name = "mypy"
 version = "1.8.0"
 description = "Optional static typing for Python"
@@ -305,8 +304,6 @@ files = [
 ]
 
 [[package]]
-=======
->>>>>>> 725e02f (Poetry, pre-commit, and project structure setup)
 name = "nodeenv"
 version = "1.8.0"
 description = "Node.js virtual environment builder"
@@ -615,7 +612,6 @@ files = [
 ]
 
 [[package]]
-<<<<<<< HEAD
 name = "typing-extensions"
 version = "4.9.0"
 description = "Backported and Experimental Type Hints for Python 3.8+"
@@ -627,8 +623,6 @@ files = [
 ]
 
 [[package]]
-=======
->>>>>>> 725e02f (Poetry, pre-commit, and project structure setup)
 name = "virtualenv"
 version = "20.25.0"
 description = "Virtual Python Environment builder"
@@ -651,8 +645,4 @@ test = ["covdefaults (>=2.3)", "coverage (>=7.2.7)", "coverage-enable-subprocess
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-<<<<<<< HEAD
 content-hash = "01f0e5225245589061bf56488b02f2567eb73e36a0a0a3dd5db719326fe31526"
-=======
-content-hash = "3d1dca91645845674fa807a9a0649d9028ee233eddd6184e1c57ff6216677dd5"
->>>>>>> 725e02f (Poetry, pre-commit, and project structure setup)

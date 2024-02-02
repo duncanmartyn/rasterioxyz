@@ -15,15 +15,11 @@ rasterio = "1.3.9"
 coverage = "^7.4.1"
 pre-commit = "^3.6.0"
 pytest = "^8.0.0"
-<<<<<<< HEAD
 mypy = "^1.8.0"
-=======
->>>>>>> 725e02f (Poetry, pre-commit, and project structure setup)
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
-<<<<<<< HEAD
 
 [[tool.mypy.overrides]]
 module = [
@@ -31,5 +27,3 @@ module = [
     "rasterio.errors",
 ]
 ignore_missing_imports = true
-=======
->>>>>>> 725e02f (Poetry, pre-commit, and project structure setup)
