@@ -1,0 +1,35 @@
+[tool.poetry]
+name = "rasterioxyz"
+version = "0.1.0"
+description = "Package for tiling georeferenced rasterio datasets according to the XYZ tiles standard."
+authors = ["Duncan Martyn <duncan.martyn@hotmail.co.uk>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+numpy = "1.26.2"
+rasterio = "1.3.9"
+
+[tool.poetry.group.dev.dependencies]
+coverage = "^7.4.1"
+pre-commit = "^3.6.0"
+pytest = "^8.0.0"
+<<<<<<< HEAD
+mypy = "^1.8.0"
+=======
+>>>>>>> 725e02f (Poetry, pre-commit, and project structure setup)
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+<<<<<<< HEAD
+
+[[tool.mypy.overrides]]
+module = [
+    "rasterio",
+    "rasterio.errors",
+]
+ignore_missing_imports = true
+=======
+>>>>>>> 725e02f (Poetry, pre-commit, and project structure setup)
