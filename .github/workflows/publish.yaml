@@ -3,10 +3,6 @@ name: Publish
 on:
   release:
     types: [published]
-  workflow_run:
-    workflows: [Test]
-    types: [completed]
-    branches: [develop]
 permissions:
   contents: read
 jobs:
