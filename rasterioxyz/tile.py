@@ -21,7 +21,7 @@ from rasterioxyz._utils import _Bounds, _ImageProperties, _Tile, _Zoom
 
 class Tiles:
     """
-    Object for generating Pseudo-Mercator XYZ tiles from a Rasterio dataset
+    Object for generating Pseudo-Mercator XYZ standard tiles from a Rasterio dataset
     corresponding to a georeferenced raster image.
 
     Parameters
