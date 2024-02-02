@@ -2,7 +2,7 @@
 ![pypi downloads](https://img.shields.io/pypi/dm/rasterioxyz)
 [![publish](https://github.com/duncanmartyn/rasterioxyz/actions/workflows/publish.yaml/badge.svg?branch=main)](https://github.com/duncanmartyn/rasterioxyz/actions/workflows/publish.yaml)
 [![test](https://github.com/duncanmartyn/rasterioxyz/actions/workflows/test.yaml/badge.svg?branch=develop)](https://github.com/duncanmartyn/rasterioxyz/actions/workflows/test.yaml)
-[![Codacy Badge](https://app.codacy.com/project/badge/Coverage/c96f41ab95c544a1b353c591f02be68f)](https://app.codacy.com/gh/duncanmartyn/rasterioxyz/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_coverage)
+[![Codacy Badge](https://app.codacy.com/project/badge/Coverage/8969f1e01f054508bbd7f7d4567e5952)](https://app.codacy.com/gh/duncanmartyn/rasterioxyz/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_coverage)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/8969f1e01f054508bbd7f7d4567e5952)](https://app.codacy.com/gh/duncanmartyn/rasterioxyz/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 [![security: bandit](https://img.shields.io/badge/security-bandit-yellow.svg)](https://github.com/PyCQA/bandit)
 ![GitHub contributors](https://img.shields.io/github/contributors/duncanmartyn/rasterioxyz)
