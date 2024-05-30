@@ -1,8 +1,11 @@
 ---
 name: Publish
 on:
-  release:
-    types: [created]
+  push:
+    paths:
+      - rasterioxyz/**
+      - .github/**
+    branches: [main]
 permissions:
   contents: read
 
