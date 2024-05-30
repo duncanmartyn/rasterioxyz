@@ -6,7 +6,7 @@ import pytest
 from rasterio.errors import CRSError
 
 from .conftest import TEST_OUTPUT_DIR
-from rasterioxyz.tile import Tiles
+from rasterioxyz import Tiles
 
 
 class TestTiles:

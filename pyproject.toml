@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "rasterioxyz"
-version = "0.0.1"
+version = "0.0.2"
 description = "Package for tiling georeferenced rasterio datasets according to the XYZ tiles standard."
 authors = ["Duncan Martyn <duncan.martyn@hotmail.co.uk>"]
 license = "MIT"

@@ -110,7 +110,7 @@ class Tiles:
         "_img_min",
         "tiles",
     )
-    _valid_resampling: dict[str, int] = {
+    _valid_resampling = {
         "nearest": 0,
         "bilinear": 1,
         "cubic": 2,
@@ -127,7 +127,7 @@ class Tiles:
         "sum": 13,
         "rms": 14,
     }
-    _origin: float = 20037508.342789244
+    _origin = 20037508.342789244
 
     def __init__(
             self,
@@ -143,7 +143,7 @@ class Tiles:
             )
         if image.crs is None:
             raise errors.CRSError("image must be a georeferenced dataset.")
-        self.img: DatasetReader = image
+        self.img = image
 
         if not isinstance(zooms, Sequence):
             raise TypeError(f"zooms must be a sequence, not {type(zooms).__name__}.")
@@ -151,13 +151,13 @@ class Tiles:
             raise TypeError("all zoom values must be of type int.")
         if not all(zoom <= 25 and zoom >= 0 for zoom in zooms):
             raise ValueError("all zoom values must be between 0 and 25.")
-        self.zooms: Sequence[int] = zooms
+        self.zooms = zooms
 
         if not isinstance(pixels, int):
             raise TypeError(f"pixels must be of type int, not {type(pixels).__name__}.")
         if pixels not in (256, 512):
             raise ValueError(f"pixels must be 256 or 512, not {pixels}.")
-        self.pixels: int = pixels
+        self.pixels = pixels
 
         if not isinstance(resampling, str):
             raise TypeError(
@@ -168,36 +168,34 @@ class Tiles:
                 f"resampling must be one of {list(self._valid_resampling.keys())}, not "
                 f"{resampling}.",
             )
-        self.resampling: int = self._valid_resampling.get(resampling, 0)
+        self.resampling = self._valid_resampling.get(resampling, 0)
 
-        self._img_is_3857: bool = self.img.crs == 3857
+        self._img_is_3857 = self.img.crs == 3857
         if not self._img_is_3857:
             warnings.warn(
                 f"source CRS is {self.img.crs}. Data will be reprojected to EPSG:3857.",
                 TileWarning,
                 stacklevel=2,
             )
-        self._img_properties: _ImageProperties = self._get_mercator_properties()
+        self._img_properties = self._get_mercator_properties()
 
-        self._tile_bands: int = self.img.count if self.img.count <= 3 else 3
+        self._tile_bands = self.img.count if self.img.count <= 3 else 3
 
-        self._img_dtype: str = self.img.dtypes[0]
+        self._img_dtype = self.img.dtypes[0]
         if self._img_dtype != "uint8":
             warnings.warn(
                 f"source dtype is {self._img_dtype}. Data will be rescaled to uint8.",
                 TileWarning,
                 stacklevel=2,
             )
-            self._img_max: int | float
-            self._img_min: int | float
             self._img_max, self._img_min = self._get_image_statistics()
 
-        self.tiles: Generator[_Tile, None, None] = self._tile()
+        self.tiles = self._tile()
 
     def __repr__(self) -> str:
         """Return a string representation of an instance of Tiles."""
-        resampling_str: str = f"'{list(self._valid_resampling.keys())[self.resampling]}'"
-        message: str = (
+        resampling_str = f"'{list(self._valid_resampling.keys())[self.resampling]}'"
+        message = (
             f"Tiles(image={self.img} zooms={self.zooms} pixels={self.pixels} "
             f"resampling={resampling_str})"
         )
@@ -208,10 +206,10 @@ class Tiles:
         if not isinstance(other, Tiles):
             return False
 
-        dataset_eq: bool = self.img.profile == other.img.profile
-        zooms_eq: bool = self.zooms == other.zooms
-        pixels_eq: bool = self.pixels == other.pixels
-        resampling_eq: bool = self.resampling == other.resampling
+        dataset_eq = self.img.profile == other.img.profile
+        zooms_eq = self.zooms == other.zooms
+        pixels_eq = self.pixels == other.pixels
+        resampling_eq = self.resampling == other.resampling
 
         if all([dataset_eq, zooms_eq, pixels_eq, resampling_eq]):
             return True
@@ -234,16 +232,12 @@ class Tiles:
         properties : _ImageProperties
             _ImageProperties object corresponding to the source rasterio dataset.
         """
-        properties: _ImageProperties
         if self._img_is_3857:
             properties = _ImageProperties(
                 self.img.transform,
                 _Bounds(*self.img.bounds),
             )
         else:
-            transform: Affine
-            width: int
-            height: int
             transform, width, height = warp.calculate_default_transform(
                 self.img.crs,
                 3857,
@@ -251,10 +245,10 @@ class Tiles:
                 self.img.height,
                 *self.img.bounds,
             )
-            minx: float = transform[2]
-            maxx: float = minx + transform[0] * width
-            maxy: float = transform[5]
-            miny: float = maxy + transform[4] * height
+            minx = transform[2]
+            maxx = minx + transform[0] * width
+            maxy = transform[5]
+            miny = maxy + transform[4] * height
             properties = _ImageProperties(
                 transform,
                 _Bounds(minx, miny, maxx, maxy),
@@ -273,11 +267,11 @@ class Tiles:
         img_min : int | float
             Minimum value across all bands of the source dataset.
         """
-        band_statistics: list[Any] = [
+        band_statistics = [
             self.img.statistics(band) for band in range(1, self._tile_bands + 1)
         ]
-        img_max: int | float = max([stats.max for stats in band_statistics])
-        img_min: int | float = min([stats.min for stats in band_statistics])
+        img_max = max([stats.max for stats in band_statistics])
+        img_min = min([stats.min for stats in band_statistics])
         return img_max, img_min
 
     def _tile(self) -> Generator[_Tile, None, None]:
@@ -290,9 +284,9 @@ class Tiles:
             _Tile object corresponding to a single XYZ tile.
         """
         for zoom in self.zooms:
-            zoom_properties: _Zoom = self._build_zoom(zoom)
+            zoom_properties = self._build_zoom(zoom)
             for col, row in zoom_properties.tile_indices:
-                tile: _Tile = self._build_tile(zoom, col, row, zoom_properties.tile_dims)
+                tile = self._build_tile(zoom, col, row, zoom_properties.tile_dims)
 
                 yield tile
 
@@ -310,10 +304,10 @@ class Tiles:
         tile : _Tile
             _Zoom object corresponding to a single XYZ zoom level.
         """
-        zoom_ntiles: int = 4 ** zoom
-        zoom_dims: float = zoom_ntiles ** .5
-        tile_dims: float = (self._origin * 2) / zoom_dims
-        tile_res: float = tile_dims / self.pixels
+        zoom_ntiles = 4 ** zoom
+        zoom_dims = zoom_ntiles ** .5
+        tile_dims = (self._origin * 2) / zoom_dims
+        tile_res = tile_dims / self.pixels
         if tile_res < self._img_properties.transform[0]:
             warnings.warn(
                 f"tile resolution is higher than source at zoom level {zoom}. "
@@ -321,25 +315,19 @@ class Tiles:
                 TileWarning,
                 stacklevel=3,
             )
-
-        start_col: int = int(
-            (self._origin - abs(self._img_properties.bounds.minx)) // tile_dims,
+        start_col = int((self._img_properties.bounds.minx - -self._origin) // tile_dims)
+        end_col = int((self._img_properties.bounds.maxx - -self._origin) // tile_dims)
+        start_row = int(
+            abs(self._img_properties.bounds.maxy - self._origin) // tile_dims,
         )
-        end_col: int = int(
-            (self._origin - abs(self._img_properties.bounds.maxx)) // tile_dims,
+        end_row = int(
+            abs(self._img_properties.bounds.miny - self._origin) // tile_dims,
         )
-        start_row: int = int(
-            (self._origin - abs(self._img_properties.bounds.maxy)) // tile_dims,
-        )
-        end_row: int = int(
-            (self._origin - abs(self._img_properties.bounds.miny)) // tile_dims,
-        )
-        tile_indices: product = product(
+        tile_indices = product(
             range(start_col, end_col + 1),
             range(start_row, end_row + 1),
         )
-
-        zoom_properties: _Zoom = _Zoom(zoom, tile_dims, tile_indices)
+        zoom_properties = _Zoom(zoom, tile_dims, tile_indices)
         return zoom_properties
 
     def _build_tile(self, zoom: int, col: int, row: int, dims: int | float) -> _Tile:
@@ -362,29 +350,25 @@ class Tiles:
         tile : _Tile
             _Tile object corresponding to a single XYZ tile.
         """
-        minx: float = self._origin * -1 + col * dims
-        maxx: float = minx + dims
-        maxy: float = self._origin - row * dims
-        miny: float = maxy - dims
-        bounds: _Bounds = _Bounds(minx, miny, maxx, maxy)
-        trans: Affine = transform.from_bounds(*bounds, self.pixels, self.pixels)
-        window: windows.Window = windows.from_bounds(
-            *bounds,
-            self._img_properties.transform,
-        )
-        tile_data: ndarray
+        minx = self._origin * -1 + col * dims
+        maxx = minx + dims
+        maxy = self._origin - row * dims
+        miny = maxy - dims
+        bounds = _Bounds(minx, miny, maxx, maxy)
+        affine = transform.from_bounds(*bounds, self.pixels, self.pixels)
+        window = windows.from_bounds(*bounds, self._img_properties.transform)
         if self._img_is_3857:
             tile_data = self._read_tile_data(window)
         else:
-            tile_data = self._reproject_tile_data(window, trans)
+            tile_data = self._reproject_tile_data(window, affine)
         if tile_data.dtype != uint8:
             tile_data = self._array_to_uint8(tile_data)
-        tile: _Tile = _Tile(
+        tile = _Tile(
             zoom=zoom,
             column=col,
             row=row,
             bounds=bounds,
-            transform=trans,
+            transform=affine,
             window=window,
             data=tile_data,
         )
@@ -408,7 +392,7 @@ class Tiles:
         tile_array : numpy.ndarray
             Data within the tile's window.
         """
-        tile_array: ndarray = warp.reproject(
+        tile_array = warp.reproject(
             source=Band(
                 self.img,
                 range(1, self._tile_bands + 1),
@@ -443,14 +427,14 @@ class Tiles:
         tile_array : numpy.ndarray
             Data within the tile's window.
         """
-        tile_array: ndarray = self.img.read(
+        tile_array = self.img.read(
             out_shape=(self._tile_bands, self.pixels, self.pixels),
             window=tile_window,
             masked=True,
             boundless=True,
             resampling=self.resampling,
         )
-        tile_alpha: ndarray = where(
+        tile_alpha = where(
             tile_array[0].mask, 0, 255
         ).reshape((1, self.pixels, self.pixels)).astype(self._img_dtype)
         tile_array = append(tile_array, tile_alpha, axis=0)
@@ -471,7 +455,6 @@ class Tiles:
         rescaled_array : numpy.ndarray
             Rescaled uint8 array.
         """
-        # rescale all bands but alpha
         tile_array[:-1] = (
             (tile_array[:-1] - self._img_min) / (self._img_max - self._img_min)
         ) * (255 - 0) + 0
@@ -497,14 +480,14 @@ class Tiles:
         if driver.upper() not in ["PNG", "JPEG"]:
             raise ValueError(f"driver must be PNG or JPEG, not {driver}.")
 
-        out_dir: Path = Path(directory) if not isinstance(directory, Path) else directory
+        out_dir = Path(directory) if not isinstance(directory, Path) else directory
         if not out_dir.exists() or not out_dir.is_dir():
             raise FileNotFoundError(f"directory does not exist: {directory}")
 
         for tile in self.tiles:
-            img_dir: Path = out_dir.joinpath(str(tile.zoom), str(tile.column))
+            img_dir = out_dir.joinpath(str(tile.zoom), str(tile.column))
             img_dir.mkdir(parents=True, exist_ok=True)
-            img_path: Path = img_dir.joinpath(f"{tile.row}.{driver}")
+            img_path = img_dir.joinpath(f"{tile.row}.{driver}")
 
             # if alpha indicates total transparency, skip write
             if tile.data[-1].mean() == 0:
