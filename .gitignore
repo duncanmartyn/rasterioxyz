@@ -161,3 +161,9 @@ cython_debug/
 
 # unit test output folder, if present
 tests/output
+
+# ruff
+.ruff_cache
+
+# vscode
+.vscode

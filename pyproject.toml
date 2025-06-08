@@ -1,29 +1,32 @@
-[tool.poetry]
+[project]
 name = "rasterioxyz"
-version = "0.0.2"
-description = "Package for tiling georeferenced rasterio datasets according to the XYZ tiles standard."
-authors = ["Duncan Martyn <duncan.martyn@hotmail.co.uk>"]
-license = "MIT"
+version = "0.1.0"
+description = "Package for tiling georeferenced Rasterio DatasetReader objects according to the XYZ tiles standard."
 readme = "README.md"
-
-[tool.poetry.dependencies]
-python = "^3.10"
-numpy = "1.26.2"
-rasterio = "1.3.9"
-
-[tool.poetry.group.dev.dependencies]
-coverage = "^7.4.1"
-pre-commit = "^3.6.0"
-pytest = "^8.0.0"
-mypy = "^1.8.0"
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
-
-[[tool.mypy.overrides]]
-module = [
-    "rasterio",
-    "rasterio.errors",
+requires-python = ">=3.13"
+dependencies = [
+    "rasterio>=1.4.3",
 ]
-ignore_missing_imports = true
+
+[project.urls]
+repository = "https://github.com/duncanmartyn/rasterioxyz"
+issues = "https://github.com/duncanmartyn/rasterioxyz/issues"
+changelog = "https://github.com/duncanmartyn/rasterioxyz/blob/main/CHANGELOG.md"
+
+[dependency-groups]
+dev = [
+    "mypy>=1.15.0",
+    "pre-commit>=4.2.0",
+    "pytest>=8.3.5",
+    "pytest-cov>=6.1.1",
+    "requests>=2.32.3",
+]
+
+[tool.ruff]
+line-length = 79
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*.py" = ["S101"]
+
+[project.scripts]
+rasterioxyz = "rasterioxyz._cli:main"
