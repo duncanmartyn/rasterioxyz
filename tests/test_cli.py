@@ -1,4 +1,5 @@
 """Tests for RasterioXYZ CLI functionality."""
+
 import shutil
 import subprocess
 import sys

@@ -64,8 +64,10 @@ class _TileRequestHandler(BaseHTTPRequestHandler):
 
         try:
             z, x, y = [
-                int(val) for val
-                in self.path.replace(f".{self.driver}", "").split("/")[1:]
+                int(val)
+                for val in self.path.replace(f".{self.driver}", "").split("/")[
+                    1:
+                ]
             ]
         except ValueError:
             self._malformed_url_response()
@@ -99,10 +101,9 @@ class _TileRequestHandler(BaseHTTPRequestHandler):
     def _request_is_unmodified(self) -> bool:
         """Check if a request has been modified."""
         if last_req := self.headers.get("If-Modified-Since"):
-            last_utc = (
-                datetime.strptime(last_req, "%a, %d %b %Y %H:%M:%S GMT")
-                .replace(tzinfo=UTC)
-            )
+            last_utc = datetime.strptime(
+                last_req, "%a, %d %b %Y %H:%M:%S GMT"
+            ).replace(tzinfo=UTC)
             if self.start < last_utc:
                 self.send_response(304)
                 self.end_headers()

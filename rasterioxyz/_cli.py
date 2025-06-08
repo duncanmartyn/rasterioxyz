@@ -171,5 +171,6 @@ def _create_common_arguments(parser: ArgumentParser) -> None:
         help="Format in which to write or serve tile images. Defaults to PNG.",
     )
 
+
 if __name__ == "__main__":
     main()
