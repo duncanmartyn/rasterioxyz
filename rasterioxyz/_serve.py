@@ -102,7 +102,8 @@ class _TileRequestHandler(BaseHTTPRequestHandler):
         """Check if a request has been modified."""
         if last_req := self.headers.get("If-Modified-Since"):
             last_utc = datetime.strptime(
-                last_req, "%a, %d %b %Y %H:%M:%S GMT"
+                last_req,
+                "%a, %d %b %Y %H:%M:%S GMT",
             ).replace(tzinfo=UTC)
             if self.start < last_utc:
                 self.send_response(304)
