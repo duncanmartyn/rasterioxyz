@@ -17,10 +17,6 @@ DEFAULT_CASE = {
 }
 DEFAULT_DTYPE = "uint8"
 
-TEST_OUTPUT_DIR = Path(__file__).parent / "output"
-if not TEST_OUTPUT_DIR.exists():
-    Path.mkdir(TEST_OUTPUT_DIR)
-
 
 @pytest.fixture
 def test_data_param(
@@ -72,7 +68,7 @@ def generate_test_array(
     info = dtype_info.get(np.dtype(dtype).kind)(dtype)
     rng = np.random.default_rng()
     return rng.uniform(info.min, info.max, (count, height, width)).astype(
-        dtype
+        dtype,
     )
 
 

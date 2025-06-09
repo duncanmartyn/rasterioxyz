@@ -1,9 +1,11 @@
 """Tests for core RasterioXYZ functionality."""
 
-import shutil
 import threading
+import time
 from collections.abc import Generator
+from datetime import UTC, datetime
 from pathlib import Path
+from tempfile import TemporaryDirectory
 
 import pytest
 import requests
@@ -15,7 +17,6 @@ from rasterioxyz import Tiles
 
 from .conftest import (
     DEFAULT_CASE,
-    TEST_OUTPUT_DIR,
     create_test_data,
     get_free_port,
     get_png_dimensions,
@@ -111,26 +112,20 @@ def test_write(  # noqa: PLR0913
 ) -> None:
     """Test writing of generated tiles."""
     tiles = Tiles(test_data_param, zooms, allow_upsample=allow_upsample)
-    test_tiles_dir = TEST_OUTPUT_DIR / Path(test_data_param.name).stem
 
-    if error and not test_tiles_dir.exists():
+    if error:
         with pytest.raises(error):
-            tiles.write(test_tiles_dir, driver)
+            tiles.write("test/path/", driver)
     else:
-        test_tiles_dir.mkdir()
-        tiles.write(test_tiles_dir, driver)
-
-        tile_image_paths: list[Path] = []
-        for tile in out_tiles:
-            path = test_tiles_dir / f"{tile}.{driver.lower()}"
-            tile_image_paths.append(path)
-            assert path.exists()
-
-        assert all(
-            get_png_dimensions(image_path) == (tiles.pixels, tiles.pixels)
-            for image_path in tile_image_paths
-        )
-        shutil.rmtree(test_tiles_dir, ignore_errors=True)
+        with TemporaryDirectory() as tmp_dir:
+            test_tiles_dir = Path(tmp_dir)
+            tiles.write(test_tiles_dir, driver)
+            tile_image_paths = [
+                test_tiles_dir / f"{tile}.{driver}" for tile in out_tiles
+            ]
+            for path in tile_image_paths:
+                assert path.exists()
+                assert get_png_dimensions(path) == (tiles.pixels, tiles.pixels)
 
 
 @pytest.mark.parametrize(
@@ -160,9 +155,6 @@ def test_serve(
     Child processes aren't possible due to unpickleable
     `rasterio.DatasetReader` objects.
 
-    Testing the 304 (cached) response by passing the If-Modified-Since header
-    worked locally but not in CI and so is not covered.
-
     When running test cases in parallel, `get_free_port` risks race conditions.
     """
     tiles = Tiles(test_data_param, zooms=[0])
@@ -184,32 +176,51 @@ def test_serve(
             daemon=True,
         )
         svr_thread.start()
-        try:
-            z = x = y = 0
-            drv = driver.lower()
-            response_200 = requests.get(
-                f"http://localhost:{port}/{z}/{x}/{y}.{drv}",
-                timeout=5,
-            )
-            assert response_200.status_code == codes["OK"]
-            response_204 = requests.get(
-                f"http://localhost:{port}/favicon.ico",
-                timeout=5,
-            )
-            assert response_204.status_code == codes["non-tile"]
-            response_400 = requests.get(
-                f"http://localhost:{port}/{x}/{y}.{drv}",
-                timeout=5,
-            )
-            assert response_400.status_code == codes["malformed"]
-            # NOTE: tests 404 for greater than max zoom, not empty tile
-            response_404 = requests.get(
-                f"http://localhost:{port}/{z + 1}/0/0.{drv}",
-                timeout=5,
-            )
-            assert response_404.status_code == codes["not found"]
-        finally:
-            pass
+        start = time.time()
+        timeout = 15
+
+        # allow server to start
+        while time.time() - start < timeout:
+            try:
+                z = x = y = 0
+                drv = driver.lower()
+                response_200 = requests.get(
+                    f"http://localhost:{port}/{z}/{x}/{y}.{drv}",
+                    timeout=5,
+                )
+                assert response_200.status_code == codes["OK"]
+                response_304 = requests.get(
+                    f"http://localhost:{port}/{z}/{x}/{y}.{drv}",
+                    headers={
+                        "If-Modified-Since": (
+                            datetime.now(UTC).strftime(
+                                "%a, %d %b %Y %H:%M:%S GMT",
+                            )
+                        ),
+                    },
+                    timeout=5,
+                )
+                assert response_304.status_code == codes["cached"]
+                response_204 = requests.get(
+                    f"http://localhost:{port}/favicon.ico",
+                    timeout=5,
+                )
+                assert response_204.status_code == codes["non-tile"]
+                response_400 = requests.get(
+                    f"http://localhost:{port}/{x}/{y}.{drv}",
+                    timeout=5,
+                )
+                assert response_400.status_code == codes["malformed"]
+                # NOTE: tests 404 for greater than max zoom, not empty tile
+                response_404 = requests.get(
+                    f"http://localhost:{port}/{z + 1}/0/0.{drv}",
+                    timeout=5,
+                )
+                assert response_404.status_code == codes["not found"]
+            except requests.exceptions.ConnectionError:
+                time.sleep(0.5)
+            finally:
+                pass
 
 
 def test_eq() -> None:

@@ -1,9 +1,9 @@
 """Tests for RasterioXYZ CLI functionality."""
 
-import shutil
 import subprocess
 import sys
 from pathlib import Path
+from tempfile import TemporaryDirectory
 
 from _pytest.monkeypatch import MonkeyPatch
 
@@ -11,7 +11,6 @@ from rasterioxyz import _cli
 
 from .conftest import (
     DEFAULT_CASE,
-    TEST_OUTPUT_DIR,
     create_test_data,
 )
 
@@ -35,8 +34,11 @@ def test_cli_write(monkeypatch: MonkeyPatch) -> None:
     Conflict between subprocess and monkeypatch mean dummy CLI usage is
     necessary (or easier) here.
     """
-    with create_test_data(**DEFAULT_CASE) as test_data:
-        test_tiles_dir = TEST_OUTPUT_DIR / Path(test_data.name).stem
+    with (
+        create_test_data(**DEFAULT_CASE) as test_data,
+        TemporaryDirectory() as tmp_dir,
+    ):
+        test_tiles_dir = Path(tmp_dir) / Path(test_data.name).stem
         test_tiles_dir.mkdir()
         monkeypatch.setattr(
             "rasterioxyz._cli.rasterio.open",
@@ -57,4 +59,3 @@ def test_cli_write(monkeypatch: MonkeyPatch) -> None:
         )
         _cli.main()
         assert list(test_tiles_dir.glob("**/*.PNG"))
-        shutil.rmtree(test_tiles_dir, ignore_errors=True)
