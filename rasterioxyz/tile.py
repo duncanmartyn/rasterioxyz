@@ -1,6 +1,4 @@
-"""Module containing core public functionality."""
-
-from __future__ import annotations
+"""Raster tiling functionality."""
 
 import logging
 import warnings
@@ -188,7 +186,7 @@ class Tiles:
         """
         self._filter_georeference_warnings()
         self._validate_type("driver", driver, str)
-        self._validate_value("driver", driver.upper(), ["PNG", "JPEG"])
+        self._validate_value("driver", driver, ["PNG", "JPEG"])
 
         out_dir = Path(path) if not isinstance(path, Path) else path
         if not out_dir.exists() or not out_dir.is_dir():
@@ -203,7 +201,6 @@ class Tiles:
                 dst.write(self._get_tile_bytes(tile, driver))
 
         with ThreadPoolExecutor(max_workers=threads) as executor:
-            # if alpha indicates total transparency, skip write
             futures = [
                 executor.submit(_write, tile)
                 for tile in self.tiles
@@ -237,7 +234,7 @@ class Tiles:
         """
         self._filter_georeference_warnings()
         self._validate_type("driver", driver, str)
-        self._validate_value("driver", driver.upper(), ["PNG", "JPEG"])
+        self._validate_value("driver", driver, ["PNG", "JPEG"])
         logger = self._create_logger()
         driver = driver.lower()  # type:ignore[assignment]
         request_handler = partial(
@@ -472,7 +469,6 @@ class Tiles:
         driver: str,
     ) -> bytes:
         """Return a single tile's data as bytes."""
-        # fastest to retrieve driver formatted bytes and write with base open
         array_data: np.ndarray = tile["data"]
         with rio.MemoryFile() as memfile:
             with memfile.open(

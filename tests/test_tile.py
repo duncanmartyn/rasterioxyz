@@ -211,7 +211,7 @@ def test_serve(
                     timeout=5,
                 )
                 assert response_400.status_code == codes["malformed"]
-                # NOTE: tests 404 for greater than max zoom, not empty tile
+                # tests 404 for greater than max zoom, not empty tile
                 response_404 = requests.get(
                     f"http://localhost:{port}/{z + 1}/0/0.{drv}",
                     timeout=5,
