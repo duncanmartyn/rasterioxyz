@@ -3,7 +3,7 @@
 import threading
 import time
 from collections.abc import Generator
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
@@ -189,13 +189,13 @@ def test_serve(
                     timeout=5,
                 )
                 assert response_200.status_code == codes["OK"]
+                # timedelta due to datetime parsing and CI speed
+                request_time = datetime.now(UTC) + timedelta(seconds=1)
                 response_304 = requests.get(
                     f"http://localhost:{port}/{z}/{x}/{y}.{drv}",
                     headers={
-                        "If-Modified-Since": (
-                            datetime.now(UTC).strftime(
-                                "%a, %d %b %Y %H:%M:%S GMT",
-                            )
+                        "If-Modified-Since": request_time.strftime(
+                            "%a, %d %b %Y %H:%M:%S GMT",
                         ),
                     },
                     timeout=5,

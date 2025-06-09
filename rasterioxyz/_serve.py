@@ -57,6 +57,8 @@ class _TileRequestHandler(BaseHTTPRequestHandler):
 
         """
         if self._request_is_unmodified():
+            self.send_response(304)
+            self.end_headers()
             return
         if self.path == "/favicon.ico" or self.path.endswith("styles.css.map"):
             self._not_tile_response()
@@ -106,8 +108,6 @@ class _TileRequestHandler(BaseHTTPRequestHandler):
                 "%a, %d %b %Y %H:%M:%S GMT",
             ).replace(tzinfo=UTC)
             if self.start < last_utc:
-                self.send_response(304)
-                self.end_headers()
                 return True
         return False
 
