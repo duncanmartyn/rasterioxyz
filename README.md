@@ -64,9 +64,9 @@ Several pre-emptive measures can be taken to improve the speed of tiling:
 - Use the default value of `rasterio.enums.Resampling.nearest` for `resampling`
 - Set `allow_upsample` to `False`
 
-Previously, tiles had to be written to disk before testing in desktop GIS platforms. With `v0.1.0`, tiles can be dynamically generated and served. Simply create a `Tiles` object with your data, call `.serve()`, then add the logged URL as an XYZ source or format it with a zoom, column, and row and request tiles through a browser. This is useful in testing and evaluating results prior to incurring cloud storage I/O costs. Software like QGIS cache tiled data and may ignore HTTP headers like If-Modified-Since. When tiling different datasets in quick succession, clearing the cache prevents tiles from previous datasets appearing in requests for newly tiled data. Alternatively, serve on a different port for each dataset.
+Previously, tiles had to be written to disk before testing in desktop GIS platforms. With `v0.1.1`, tiles can be dynamically generated and served. Simply create a `Tiles` object with your data, call `.serve()`, then add the logged URL as an XYZ source or format it with a zoom, column, and row and request tiles through a browser. This is useful in testing and evaluating results prior to incurring cloud storage I/O costs. Software like QGIS cache tiled data and may ignore HTTP headers like If-Modified-Since. When tiling different datasets in quick succession, clearing the cache prevents tiles from previous datasets appearing in requests for newly tiled data. Alternatively, serve on a different port for each dataset.
 
-Also added in `v0.1.0` was the RasterioXYZ CLI. Once installed, enter `rasterioxyz -h` in a terminal to check it out.
+Also added in `v0.1.1` was the RasterioXYZ CLI. Once installed, enter `rasterioxyz -h` in a terminal to check it out.
 
 # Roadmap
 

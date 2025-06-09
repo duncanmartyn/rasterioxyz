@@ -1,6 +1,6 @@
 [project]
 name = "rasterioxyz"
-version = "0.1.0"
+version = "0.1.1"
 description = "Package for tiling georeferenced Rasterio DatasetReader objects according to the XYZ tiles standard."
 readme = "README.md"
 requires-python = ">=3.13"
