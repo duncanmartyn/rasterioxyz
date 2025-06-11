@@ -1,7 +1,7 @@
 ![pypi version](https://img.shields.io/pypi/v/rasterioxyz)
 ![pypi downloads](https://img.shields.io/pypi/dm/rasterioxyz)
 [![publish](https://github.com/duncanmartyn/rasterioxyz/actions/workflows/publish.yaml/badge.svg?branch=main)](https://github.com/duncanmartyn/rasterioxyz/actions/workflows/publish.yaml)
-[![ci](https://github.com/duncanmartyn/rasterioxyz/actions/workflows/test.yaml/badge.svg?branch=main)](https://github.com/duncanmartyn/rasterioxyz/actions/workflows/ci.yaml)
+[![ci](https://github.com/duncanmartyn/rasterioxyz/actions/workflows/ci.yaml/badge.svg?branch=main)](https://github.com/duncanmartyn/rasterioxyz/actions/workflows/ci.yaml)
 [![security: bandit](https://img.shields.io/badge/security-bandit-yellow.svg)](https://github.com/PyCQA/bandit)
 
 - [RasterioXYZ](#rasterioxyz)
